@@ -1,5 +1,27 @@
 ###
-GET http://localhost:8080/first
+GET http://localhost:8000/first
 
 ###
-GET http://localhost:8080/first/error
+POST http://localhost:8000/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@admin.com",
+    "nome": "Admin",
+    "senha": "123456"
+}
+
+###
+POST http://localhost:8000/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@admin.com",
+    "senha": "123456"
+}
+
+### 
+GET http://localhost:8000/admin/usuario
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdHkiOlt7ImF1dGhvcml0eSI6ImFkbWluIn1dLCJpYXQiOjE3NzM4NTMyMjIsImV4cCI6MTc3Mzg4MjAyMn0.5SembKycDu9rnVsLBz54Lpj8X-UQkZxm8MWgZdXStBn8vKCZ6BrtTWGL9N1wzwX8LvSBIeN3OuxokURv1UtcWQ

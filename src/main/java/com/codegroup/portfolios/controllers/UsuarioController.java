@@ -6,23 +6,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codegroup.portfolios.dto.Response;
-import com.codegroup.portfolios.services.ServerService;
+import com.codegroup.portfolios.repositories.UsuarioRepository;
 
 @RestController
-@RequestMapping("/first")
-public class FirstController extends BaseController {
+@RequestMapping("/admin/usuario")
+public class UsuarioController extends BaseController {
 
     @Autowired
-    private ServerService serverService;
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public Response first() {
-        return super.success(serverService.hello());
-    }
-
-    @GetMapping("/error")
-    public Response firstError() {
-        return super.success(serverService.error());
+    public Response findAll() {
+        return super.success(usuarioRepository.findAll());
     }
 
 }
