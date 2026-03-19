@@ -1,27 +1,120 @@
-###
-GET http://localhost:8000/first
+@api = http://localhost:8000
+@token_root=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290QHJvb3QuY29tIiwiYXV0aG9yaXRpZXMiOlsicm9vdCJdLCJpYXQiOjE3NzM5Mzk2NzAsImV4cCI6MTc3Mzk2ODQ3MH0.JCVA-Sdut9aUew15X_RAnudG3k_3m3w4jSBfqs1CmXeSPnS--UlRrYsPwoTKjwbwkunlWFJc9rwkrPAahRi4cg
 
-###
-POST http://localhost:8000/auth/register
+@token_adim=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdGllcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzM5NDMxMDgsImV4cCI6MTc3Mzk3MTkwOH0.CfuhXkiQt-81jzx-FHqsa2xDVGF0wuC7OMO8KgFfOMZduAyZN8TFgS9OAHq2qtVUZJz7sPx_911WkhzC4lwUug
+
+### Login com root
+POST {{api}}/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "root@root.com",
+    "senha": "123456"
+}
+
+### Login com admin
+POST {{api}}/auth/login
 Accept: application/json
 Content-Type: application/json
 
 {
     "email": "admin@admin.com",
-    "nome": "Admin",
     "senha": "123456"
 }
 
-### 
-POST http://localhost:8000/auth/login
-Accept: application/json
+### Obter usuários
+GET {{api}}/root/usuario
+Authorization: Bearer {{token_root}}
+
+### Cadastrar usuário/pessoa
+POST {{api}}/root/usuario
 Content-Type: application/json
+Authorization: Bearer {{token_root}}
 
 {
-    "email": "admin@admin.com",
-    "senha": "123456"
+    "email": "funcionario@funcionario.com",
+    "senha": "123456",
+    "nome": "Funcionário",
+    "cpf": "66458892080",
+    "celular": "61999350783",
+    "perfis": [5]
 }
 
-### 
-GET http://localhost:8000/admin/usuario
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdGllcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzM4OTAxNTAsImV4cCI6MTc3MzkxODk1MH0.G3n_VlNP5BoyLqVMMNpq9QVm8snXk4GbjGPZKtUyh-J-PfUs_ngsamgntYLXyPFDlfbTpDqUn2Bnjdqvo88VKg
+### Obter projetos
+GET {{api}}/admin/projeto
+Authorization: Bearer {{token_root}}
+
+### Listar status possíveis para projetos
+GET {{api}}/root/status-projeto
+Authorization: Bearer {{token_root}}
+
+### Listar projetos
+GET {{api}}/admin/projeto
+Authorization: Bearer {{token_adim}}
+
+### Listar projetos pelo status
+GET {{api}}/admin/projeto/status/1
+Authorization: Bearer {{token_adim}}
+
+### Listar projeto especifico
+GET {{api}}/admin/projeto/4
+Authorization: Bearer {{token_adim}}
+
+### Criar projetos
+POST {{api}}/admin/projeto
+Content-Type: application/json
+Authorization: Bearer {{token_adim}}
+
+{
+    "nome": "Projeto 1",
+    "descricao": "1º Projeto",
+    "idMembroGerente": 16,
+    "dataInicio": "2026-01-01",
+    "dataPrevisaoTermino": "2026-06-10",
+    "idStatusAtual": 1,
+    "orcamentoTotal": 200000
+}
+
+### Alterar andamento de projeto especifico
+PUT {{api}}/admin/projeto/4/andamento
+Content-Type: application/json
+Authorization: Bearer {{token_adim}}
+
+{
+    "idNovoStatus": 7
+}
+
+### Obter membros de projeto especifico
+GET {{api}}/admin/projeto/4/membro
+Content-Type: application/json
+Authorization: Bearer {{token_adim}}
+
+{
+    "idNovoStatus": 7
+}
+
+### Adicionar membro existente em projeto especifico
+POST {{api}}/admin/projeto/4/membro
+Content-Type: application/json
+Authorization: Bearer {{token_adim}}
+
+{
+    "idPessoa": 17,
+    "idAtribuicao": 2
+}
+
+### Adicionar novo membro em projeto especifico
+POST {{api}}/admin/projeto/4/membro
+Content-Type: application/json
+Authorization: Bearer {{token_adim}}
+
+{
+    "idAtribuicao": 2,
+    "email": "funcionario2@funcionario.com",
+    "senha": "123456",
+    "nome": "Funcionário",
+    "cpf": "85280774030",
+    "celular": "61999350783",
+    "perfis": [5]
+}
