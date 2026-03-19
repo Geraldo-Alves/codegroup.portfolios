@@ -1,16 +1,16 @@
 package com.codegroup.portfolios.filters;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.codegroup.portfolios.services.JwtService;
-import com.codegroup.portfolios.services.UserDetailsServiceImpl;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,9 +23,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private UserDetailsServiceImpl userService;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -33,23 +30,30 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-
+        
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+             String token = authHeader.substring(7);
+             if (jwtService.isTokenValid(token)) {
 
-            String token = authHeader.substring(7);
-            String username = jwtService.extractUsername(token);
+                String username = jwtService.extractUsername(token);
+                List<String> authorities = jwtService.extractAuthorities(token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                UserDetails user = userService.loadUserByUsername(username);
+                List<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();  
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                user, null, user.getAuthorities());
+                                username,
+                                null,
+                                grantedAuthorities
+                        );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
+
+        
 
         filterChain.doFilter(request, response);
     }

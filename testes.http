@@ -12,7 +12,7 @@ Content-Type: application/json
     "senha": "123456"
 }
 
-###
+### 
 POST http://localhost:8000/auth/login
 Accept: application/json
 Content-Type: application/json
@@ -24,4 +24,4 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:8000/admin/usuario
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdHkiOlt7ImF1dGhvcml0eSI6ImFkbWluIn1dLCJpYXQiOjE3NzM4NTMyMjIsImV4cCI6MTc3Mzg4MjAyMn0.5SembKycDu9rnVsLBz54Lpj8X-UQkZxm8MWgZdXStBn8vKCZ6BrtTWGL9N1wzwX8LvSBIeN3OuxokURv1UtcWQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdGllcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzM4OTAxNTAsImV4cCI6MTc3MzkxODk1MH0.G3n_VlNP5BoyLqVMMNpq9QVm8snXk4GbjGPZKtUyh-J-PfUs_ngsamgntYLXyPFDlfbTpDqUn2Bnjdqvo88VKg

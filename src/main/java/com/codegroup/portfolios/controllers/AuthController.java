@@ -1,9 +1,6 @@
 package com.codegroup.portfolios.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,13 +35,6 @@ public class AuthController extends BaseController {
     @PostMapping("/register")
     public Response register(@RequestBody Usuario usuario) {
         usuario.setSenha(encoder.encode(usuario.getSenha()));
-
-
-        /*usuario.setPerfis(List.of(
-            Perfil(1, "ROLE_USER", "User role")
-        ));*/
-        //usuario.setPerfis(List.of(Perfil(1, "ROLE_USER", "User role")));
-
         usuarioRepository.save(usuario);
 
         return super.success("Usuário criado com sucesso");
