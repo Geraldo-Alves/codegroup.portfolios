@@ -15,23 +15,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class PerfilUsuario {
+public class StatusProjeto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nome;
+    @JsonProperty(access = Access.WRITE_ONLY)
     @ManyToOne
-    @JoinColumn(name = "ref_id_usuario")
-    private Usuario refIdUsuario;
-    @ManyToOne
-    @JoinColumn(name = "ref_id_perfil")
-    private Perfil refIdPerfil;
-    private String status;
+    @JoinColumn(name = "id_status_pai")
+    private StatusProjeto statusPai;
+    private Boolean permiteExclusao;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
