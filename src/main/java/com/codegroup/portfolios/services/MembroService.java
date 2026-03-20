@@ -65,10 +65,10 @@ public class MembroService {
             pessoa = pessoaRepository.findById(dto.getIdPessoa())
                     .orElseThrow(() -> new Exception("Pessoa não encontrada"));
         } else {
-            validarCamposNovasPessoa(dto);
+            validarCamposNovaPessoa(dto);
+
             UsuarioDTO usuarioDTO = new UsuarioDTO(
                     dto.getEmail(),
-                    dto.getSenha(),
                     dto.getNome(),
                     dto.getCpf(),
                     dto.getCelular(),
@@ -121,7 +121,7 @@ public class MembroService {
         return membro;
     }
 
-    private void validarCamposNovasPessoa(NovoMembroDTO dto) throws Exception {
+    private void validarCamposNovaPessoa(NovoMembroDTO dto) throws Exception {
         if (dto.getNome() == null || dto.getNome().isBlank()) {
             throw new Exception("Nome é obrigatório para criar novo membro");
         }
@@ -130,9 +130,6 @@ public class MembroService {
         }
         if (dto.getEmail() == null || dto.getEmail().isBlank()) {
             throw new Exception("E-mail é obrigatório para criar novo membro");
-        }
-        if (dto.getSenha() == null || dto.getSenha().isBlank()) {
-            throw new Exception("Senha é obrigatória para criar novo membro");
         }
     }
 

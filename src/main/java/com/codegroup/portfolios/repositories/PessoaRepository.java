@@ -12,4 +12,6 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 
     List<Pessoa> findAll();
 
+    boolean existsByCpf(String cpf);
+
 }

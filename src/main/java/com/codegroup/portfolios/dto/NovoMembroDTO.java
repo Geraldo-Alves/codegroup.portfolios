@@ -21,7 +21,6 @@ public class NovoMembroDTO {
     private String cpf;
     private String celular;
     private String email;
-    private String senha;
     private List<Integer> perfis;
 
 }

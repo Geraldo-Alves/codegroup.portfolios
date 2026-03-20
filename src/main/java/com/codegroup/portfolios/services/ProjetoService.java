@@ -31,18 +31,10 @@ public class ProjetoService {
     @Autowired
     private StatusProjetoRepository statusProjetoRepository;
     @Autowired
-    private PessoaRepository pessoaRepository;
-    @Autowired
-    private AtribuicaoRepository atribuicaoRepository;
-    @Autowired
-    private MembroRepository membroRepository;
-    @Autowired
     private MembroService membroService;
 
     @Transactional
     public Long createProjeto(ProjetoDTO projetoDTO) throws Exception {
-
-        System.out.println("### ProjetoDTO: " + projetoDTO.toString());
 
         Projeto projeto = new Projeto();
         projeto.setNome(projetoDTO.getNome());
@@ -86,29 +78,22 @@ public class ProjetoService {
         }
 
         // status atual do projeto
-        Optional<Andamento> andamentoAtualOpt = andamentoRepository.findByRefIdProjetoIdAndAtualTrue(idProjeto);
-        if (andamentoAtualOpt.isEmpty()) {
+        Optional<Andamento> andamentoAtual = andamentoRepository.findByRefIdProjetoIdAndAtualTrue(idProjeto);
+        if (andamentoAtual.isEmpty()) {
             throw new Exception("Andamento atual do projeto não encontrado");
         }
 
-        System.out.println("### Andamento: " + andamentoAtualOpt.get().getId() + " - Status: "
-                + andamentoAtualOpt.get().getRefIdStatus().getNome());
-
         Optional<StatusProjeto> statusAtual = statusProjetoRepository
-                .findById(andamentoAtualOpt.get().getRefIdStatus().getId());
+                .findById(andamentoAtual.get().getRefIdStatus().getId());
         if (statusAtual.isEmpty()) {
             throw new Exception("Status atual não encontrado");
         }
-
-        System.out.println("### Status atual: " + statusAtual.get().getNome());
 
         // novo status solicitado
         Optional<StatusProjeto> novoStatus = statusProjetoRepository.findById(idNovoStatus);
         if (novoStatus.isEmpty()) {
             throw new Exception("Novo status não encontrado");
         }
-
-        System.out.println("### Novo status solicitado: " + novoStatus.get().getNome());
 
         /**
          * Validações para transição de status
@@ -124,8 +109,6 @@ public class ProjetoService {
                 throw new Exception("### Próximo status não encontrado");
             }
 
-            System.out.println("### Proximo status: " + proximoStatus.get().getNome());
-
             // se proximo status for diferente do novo status solicitado, bloqueia transacao
             if (!proximoStatus.get().getId().equals(novoStatus.get().getId())) {
                 throw new Exception("Transição de status inválida");
@@ -134,13 +117,13 @@ public class ProjetoService {
         }
 
         // atualiza andamento atual para false
-        andamentoAtualOpt.get().setAtual(false);
-        andamentoRepository.save(andamentoAtualOpt.get());
+        andamentoAtual.get().setAtual(false);
+        andamentoRepository.save(andamentoAtual.get());
 
         Andamento novoAndamento = new Andamento();
         novoAndamento.setRefIdProjeto(projeto.get());
         novoAndamento.setRefIdStatus(novoStatus.get());
-        novoAndamento.setRefIdMembro(andamentoAtualOpt.get().getRefIdMembro());
+        novoAndamento.setRefIdMembro(andamentoAtual.get().getRefIdMembro());
         novoAndamento.setAtual(true);
         andamentoRepository.save(novoAndamento);
 

@@ -15,7 +15,6 @@ import com.codegroup.portfolios.dto.NovoMembroDTO;
 import com.codegroup.portfolios.dto.NovoStatusDTO;
 import com.codegroup.portfolios.dto.ProjetoDTO;
 import com.codegroup.portfolios.dto.Response;
-import com.codegroup.portfolios.entities.Membro;
 import com.codegroup.portfolios.entities.Projeto;
 import com.codegroup.portfolios.repositories.ProjetoRepository;
 import com.codegroup.portfolios.services.MembroService;

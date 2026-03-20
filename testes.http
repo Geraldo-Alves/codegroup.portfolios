@@ -1,5 +1,5 @@
 @api = http://localhost:8000
-@token_root=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290QHJvb3QuY29tIiwiYXV0aG9yaXRpZXMiOlsicm9vdCJdLCJpYXQiOjE3NzM5Mzk2NzAsImV4cCI6MTc3Mzk2ODQ3MH0.JCVA-Sdut9aUew15X_RAnudG3k_3m3w4jSBfqs1CmXeSPnS--UlRrYsPwoTKjwbwkunlWFJc9rwkrPAahRi4cg
+@token_root=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyb290QHJvb3QuY29tIiwiYXV0aG9yaXRpZXMiOlsicm9vdCJdLCJpYXQiOjE3NzQwMjkzNDEsImV4cCI6MTc3NDA1ODE0MX0.RokBBG_xRITmvfR3UmMNkMuxJNyBZecyBUVgu3zZS5k9cyCgLwC7fqvKOX3vdruTZ3fCWJqV1_ASchgfE0ksJw
 
 @token_adim=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJhdXRob3JpdGllcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzM5NDMxMDgsImV4cCI6MTc3Mzk3MTkwOH0.CfuhXkiQt-81jzx-FHqsa2xDVGF0wuC7OMO8KgFfOMZduAyZN8TFgS9OAHq2qtVUZJz7sPx_911WkhzC4lwUug
 
@@ -23,27 +23,26 @@ Content-Type: application/json
     "senha": "123456"
 }
 
+### Obter perfis (root)
+GET {{api}}/root/perfil
+Authorization: Bearer {{token_root}}
+
 ### Obter usuários
 GET {{api}}/root/usuario
 Authorization: Bearer {{token_root}}
 
-### Cadastrar usuário/pessoa
+### Cadastrar usuário/pessoa admin
 POST {{api}}/root/usuario
 Content-Type: application/json
 Authorization: Bearer {{token_root}}
 
 {
-    "email": "funcionario@funcionario.com",
-    "senha": "123456",
-    "nome": "Funcionário",
-    "cpf": "66458892080",
-    "celular": "61999350783",
-    "perfis": [5]
+    "email": "admin@admin.com",
+    "nome": "Administrador",
+    "cpf": "75571456078",
+    "celular": "75571456078",
+    "perfis": [2]
 }
-
-### Obter projetos
-GET {{api}}/admin/projeto
-Authorization: Bearer {{token_root}}
 
 ### Listar status possíveis para projetos
 GET {{api}}/root/status-projeto
@@ -51,29 +50,25 @@ Authorization: Bearer {{token_root}}
 
 ### Listar projetos
 GET {{api}}/admin/projeto
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 ### Listar projetos pelo status
 GET {{api}}/admin/projeto/status/1
-Authorization: Bearer {{token_adim}}
-
-### Listar projeto especifico
-GET {{api}}/admin/projeto/4
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 ### Criar projetos
 POST {{api}}/admin/projeto
 Content-Type: application/json
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 {
     "nome": "Projeto 2",
     "descricao": "2º Projeto",
     "membroGerente": {
-        "email": "admin2@admin.com",
+        "email": "gerente@gerente.com",
         "senha": "123456",
         "nome": "Admin 2",
-        "cpf": "85280774030",
+        "cpf": "03533093034",
         "celular": "61999350783",
         "perfis": [4]
     },
@@ -83,24 +78,28 @@ Authorization: Bearer {{token_adim}}
     "orcamentoTotal": 500100
 }
 
+### Listar projeto especifico
+GET {{api}}/admin/projeto/8
+Authorization: Bearer {{token_root}}
+
 ### Alterar andamento de projeto especifico
 PUT {{api}}/admin/projeto/4/andamento
 Content-Type: application/json
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 {
     "idNovoStatus": 7
 }
 
 ### Obter membros de projeto especifico
-GET {{api}}/admin/projeto/6/membro
+GET {{api}}/admin/projeto/8/membro
 Content-Type: application/json
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
-### Adicionar membro existente em projeto especifico
-POST {{api}}/admin/projeto/4/membro
+### Adicionar membro com pessoa existente em projeto especifico
+POST {{api}}/admin/projeto/8/membro
 Content-Type: application/json
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 {
     "idPessoa": 17,
@@ -108,16 +107,15 @@ Authorization: Bearer {{token_adim}}
 }
 
 ### Adicionar novo membro em projeto especifico
-POST {{api}}/admin/projeto/4/membro
+POST {{api}}/admin/projeto/8/membro
 Content-Type: application/json
-Authorization: Bearer {{token_adim}}
+Authorization: Bearer {{token_root}}
 
 {
     "idAtribuicao": 2,
-    "email": "funcionario2@funcionario.com",
-    "senha": "123456",
-    "nome": "Funcionário 7",
-    "cpf": "85280774030",
+    "email": "funcionario@funcionario.com",
+    "nome": "Funcionário",
+    "cpf": "07124866073",
     "celular": "61999350783",
     "perfis": [5]
 }
