@@ -14,7 +14,6 @@ import com.codegroup.portfolios.entities.Projeto;
 public interface ProjetoRepository extends JpaRepository<Projeto, Long> {
 
     List<Projeto> findAll();
-
     @Query("""
         SELECT new com.codegroup.portfolios.dto.ProjetoResumoDTO(
             p.id, p.nome, p.descricao, p.dataInicio, p.dataPrevisaoTermino, p.dataTermino, p.orcamentoTotal,

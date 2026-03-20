@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.codegroup.portfolios.dto.MembroResumoDTO;
 import com.codegroup.portfolios.dto.NovoMembroDTO;
 import com.codegroup.portfolios.dto.UsuarioDTO;
 import com.codegroup.portfolios.entities.Atribuicao;
@@ -38,18 +39,20 @@ public class MembroService {
     private UsuarioRepository usuarioRepository;
 
     @Transactional
-    public List<Membro> membrosProjeto(Long idProjeto) throws Exception {
+    public List<MembroResumoDTO> membrosProjeto(Long idProjeto) throws Exception {
         Optional<Projeto> projeto = projetoRepository.findById(idProjeto);
 
         if (projeto.isEmpty()) {
             throw new Exception("Projeto não encontrado");
         }
 
-        return membroRepository.findByRefIdProjetoId(projeto.get().getId());
+        return membroRepository.findResumoAtivoByProjeto(idProjeto);
     }
 
     @Transactional
-    public String adicionarMembro(Long idProjeto, NovoMembroDTO dto) throws Exception {
+    public Membro adicionarMembro(Long idProjeto, NovoMembroDTO dto) throws Exception {
+
+        Boolean isGerente = dto.getIdAtribuicao() != null && dto.getIdAtribuicao() == 1L;
 
         Projeto projeto = projetoRepository.findById(idProjeto)
                 .orElseThrow(() -> new Exception("Projeto não encontrado"));
@@ -77,12 +80,23 @@ public class MembroService {
             pessoa = usuario.getRefIdPessoa();
         }
 
+        // verificar se a atribuição é de gerente e se o projeto já possui um gerente responsável
+        if (atribuicao.getId() == 1) {
+            List<Membro> membrosProjeto = membroRepository.findByRefIdProjetoId(idProjeto);
+            boolean gerenteExistente = membrosProjeto.stream()
+                    .anyMatch(m -> m.getGerenteResponsavel() && m.getStatus().equals("A"));
+            if (gerenteExistente) {
+                throw new Exception("O projeto já possui um gerente responsável ativo");
+            }
+        }
+
+        // verificar se o membro ja esta no projeto
         Optional<Membro> membroExistente = membroRepository.findByRefIdProjetoIdAndRefIdPessoaId(idProjeto, pessoa.getId());
         if (membroExistente.isPresent()) {
             throw new Exception("Membro já existe para este projeto");
         }
 
-        // verificar se membro está presente em 3 outros projetos
+        // verificar se pessoa está presente em 3 outros projetos
         List<Membro> membrosPessoa = membroRepository.findByRefIdPessoaId(pessoa.getId());
         if (membrosPessoa.size() >= 3) {
             throw new Exception("Membro já está presente em 3 projetos");
@@ -92,19 +106,19 @@ public class MembroService {
         List<Membro> membrosProjeto = membroRepository.findByRefIdProjetoId(idProjeto);
         long membrosAtivos = membrosProjeto.stream().filter(m -> m.getStatus().equals("A")).count();
         if (membrosAtivos >= 10) {
-            throw new Exception("Projeto já possui 10 membros ativos");
+            throw new Exception("O Projeto já possui 10 membros ativos");
         }
 
         Membro membro = new Membro();
         membro.setRefIdProjeto(projeto);
         membro.setRefIdPessoa(pessoa);
         membro.setRefIdAtribuicao(atribuicao);
-        membro.setGerenteResponsavel(false);
+        membro.setGerenteResponsavel(isGerente);
         membro.setStatus("A");
 
         membroRepository.save(membro);
 
-        return "Membro adicionado com sucesso";
+        return membro;
     }
 
     private void validarCamposNovasPessoa(NovoMembroDTO dto) throws Exception {

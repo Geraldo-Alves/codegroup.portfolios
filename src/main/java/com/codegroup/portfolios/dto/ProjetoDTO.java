@@ -30,8 +30,7 @@ public class ProjetoDTO {
     private LocalDate dataTermino;
     @NotNull(message = "Orçamento Total é obrigatório")
     private BigDecimal orcamentoTotal;
-    @NotNull(message = "Gerente é obrigatório")
-    private Long idMembroGerente;
+    private NovoMembroDTO membroGerente;
     @NotNull(message = "Status Atual é obrigatório")
     private Long idStatusAtual;
 

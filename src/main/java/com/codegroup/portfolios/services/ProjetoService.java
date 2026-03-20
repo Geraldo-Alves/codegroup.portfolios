@@ -1,8 +1,6 @@
 package com.codegroup.portfolios.services;
 
 import com.codegroup.portfolios.repositories.AndamentoRepository;
-import java.io.ObjectInputFilter.Status;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProjetoService {
 
-    private final AndamentoRepository andamentoRepository;
+    @Autowired
+    private AndamentoRepository andamentoRepository;
     @Autowired
     private ProjetoRepository projetoRepository;
     @Autowired
@@ -37,13 +36,13 @@ public class ProjetoService {
     private AtribuicaoRepository atribuicaoRepository;
     @Autowired
     private MembroRepository membroRepository;
-
-    ProjetoService(AndamentoRepository andamentoRepository) {
-        this.andamentoRepository = andamentoRepository;
-    }
+    @Autowired
+    private MembroService membroService;
 
     @Transactional
     public Long createProjeto(ProjetoDTO projetoDTO) throws Exception {
+
+        System.out.println("### ProjetoDTO: " + projetoDTO.toString());
 
         Projeto projeto = new Projeto();
         projeto.setNome(projetoDTO.getNome());
@@ -57,26 +56,8 @@ public class ProjetoService {
         projeto.setOrcamentoTotal(projetoDTO.getOrcamentoTotal());
         projetoRepository.save(projeto);
 
-        // define o gerente do projeto
-        Optional<Pessoa> pessoaGerente = pessoaRepository.findById(projetoDTO.getIdMembroGerente());
-        if (pessoaGerente.isEmpty()) {
-            throw new Exception("Gerente não encontrado");
-        }
-
-        // obtem atribuição de gerente
-        Optional<Atribuicao> atribuicaoGerente = atribuicaoRepository.findById(1L);
-        if (atribuicaoGerente.isEmpty()) {
-            throw new Exception("Atribuição de Gerente não encontrada");
-        }
-
-        // cria o membro gerente
-        Membro membroGerente = new Membro();
-        membroGerente.setRefIdPessoa(pessoaGerente.get());
-        membroGerente.setRefIdProjeto(projeto);
-        membroGerente.setRefIdAtribuicao(atribuicaoGerente.get());
-        membroGerente.setStatus("A");
-        membroGerente.setGerenteResponsavel(true);
-        membroRepository.save(membroGerente);
+        projetoDTO.getMembroGerente().setIdAtribuicao(1L);
+        Membro membroGerente = membroService.adicionarMembro(projeto.getId(), projetoDTO.getMembroGerente());
 
         // define o primeiro andamento
         Optional<StatusProjeto> status = statusProjetoRepository.findById(projetoDTO.getIdStatusAtual());

@@ -67,13 +67,20 @@ Content-Type: application/json
 Authorization: Bearer {{token_adim}}
 
 {
-    "nome": "Projeto 1",
-    "descricao": "1º Projeto",
-    "idMembroGerente": 16,
+    "nome": "Projeto 2",
+    "descricao": "2º Projeto",
+    "membroGerente": {
+        "email": "admin2@admin.com",
+        "senha": "123456",
+        "nome": "Admin 2",
+        "cpf": "85280774030",
+        "celular": "61999350783",
+        "perfis": [4]
+    },
     "dataInicio": "2026-01-01",
-    "dataPrevisaoTermino": "2026-06-10",
+    "dataPrevisaoTermino": "2026-05-10",
     "idStatusAtual": 1,
-    "orcamentoTotal": 200000
+    "orcamentoTotal": 500100
 }
 
 ### Alterar andamento de projeto especifico
@@ -86,13 +93,9 @@ Authorization: Bearer {{token_adim}}
 }
 
 ### Obter membros de projeto especifico
-GET {{api}}/admin/projeto/4/membro
+GET {{api}}/admin/projeto/6/membro
 Content-Type: application/json
 Authorization: Bearer {{token_adim}}
-
-{
-    "idNovoStatus": 7
-}
 
 ### Adicionar membro existente em projeto especifico
 POST {{api}}/admin/projeto/4/membro
@@ -113,7 +116,7 @@ Authorization: Bearer {{token_adim}}
     "idAtribuicao": 2,
     "email": "funcionario2@funcionario.com",
     "senha": "123456",
-    "nome": "Funcionário",
+    "nome": "Funcionário 7",
     "cpf": "85280774030",
     "celular": "61999350783",
     "perfis": [5]
